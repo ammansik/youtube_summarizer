@@ -7,12 +7,8 @@ from functools import wraps
 import streamlit as st
 
 from audio_to_text import transcribe_audio
-from text_summary import (
-    align_chapters,
-    get_automatic_chapters,
-    query_video,
-    summarize_chapters,
-)
+from text_summary import (align_chapters, get_automatic_chapters,
+                          summarize_chapters)
 from youtube_extraction import get_youtube_chapters, youtube_to_audio
 
 

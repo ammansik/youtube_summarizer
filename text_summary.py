@@ -8,11 +8,8 @@ from langchain.docstore.document import Document
 from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
 from sklearn.cluster import KMeans
-from tenacity import (
-    retry,
-    stop_after_attempt,  # for exponential backoff
-    wait_random_exponential,
-)
+from tenacity import stop_after_attempt  # for exponential backoff
+from tenacity import retry, wait_random_exponential
 
 DEFAULT_PROMPT = (
     "Summarize this Youtube video chapter. Always start with a topical sentence: "
