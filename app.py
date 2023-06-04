@@ -107,20 +107,6 @@ def summarize_video(youtube_url):
         st.write(summary)
 
 
-def ask_video(youtube_url, question):
-    st.video(youtube_url)
-    # Create a temporary directory to store the audio file
-    work_dir = get_work_dir()
-
-    # Download and transcribe video
-    audio_fpath, yt_chapters = download_youtube(youtube_url, work_dir)
-    timestamped_text = audio_to_text(audio_fpath)
-
-    # Index and query transcript
-    answer = query_video(timestamped_text, question)
-    st.write(answer)
-
-
 def app():
     st.title("Video Summarizer")
     youtube_url = st.text_input("Enter a YouTube URL")
@@ -128,14 +114,8 @@ def app():
     # Add summarize button
     summarize_button = st.button("Summarize")
 
-    # Add query button
-    question = st.text_input("Enter a question")
-    ask_button = st.button("Ask")
-
     if summarize_button:
         summarize_video(youtube_url)
-    if ask_button:
-        ask_video(youtube_url, question)
 
 
 if __name__ == "__main__":

@@ -164,20 +164,6 @@ def get_chunk_text(chunk):
     return chunk_text
 
 
-def query_video(timestamped_transcripts, question, chunk_lines=5):
-    timestamped_transcripts = timestamped_transcripts.split("\n")
-    # Split into chunks
-    text_chunks = get_chunks(timestamped_transcripts, chunk_lines)
-
-    # Index text chunks
-    transcript_embeddings = get_embeddings(text_chunks)
-
-    # Index question
-    question_embedding = get_embeddings([question])
-
-    return "This is the answer"
-
-
 def summarize_chapters(chapters):
     llm = OpenAI(temperature=0.9, openai_api_key=os.environ.get("CHATGPT_API_KEY"))
     chapter_docs = [Document(page_content=chapter["text"]) for chapter in chapters]
