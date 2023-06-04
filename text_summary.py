@@ -198,4 +198,4 @@ def summarize_chapters(chapters):
                 "summary": chapter_summary.strip(),
             }
         )
-    return summarized_chapters
+    return summarized_chapters, summaries["output_text"]

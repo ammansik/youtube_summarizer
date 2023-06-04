@@ -84,7 +84,9 @@ def summarize_video(youtube_url):
     timestamped_text = audio_to_text(audio_fpath)
 
     chapters = retrieve_chapters(timestamped_text, yt_chapters)
-    summarized_chapters = summarize_youtube_chapters(chapters)
+    summarized_chapters, overall_summary = summarize_youtube_chapters(chapters)
+
+    st.write(f"**TLDR:** {overall_summary}")
 
     for summarized_chapter in summarized_chapters:
         start_time = convert_seconds(summarized_chapter["start"])
