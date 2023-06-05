@@ -3,6 +3,7 @@ import os
 import tempfile
 import time
 from functools import wraps
+from shutil import rmtree
 
 import streamlit as st
 
@@ -103,6 +104,7 @@ def summarize_video(youtube_url):
         st.markdown(hyperlink, unsafe_allow_html=True)
 
         st.write(summary)
+    rmtree(work_dir)
 
 
 def app():
