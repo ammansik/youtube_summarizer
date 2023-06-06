@@ -112,7 +112,7 @@ def summarize_video(youtube_url):
 
 def app():
     st.title("Video Summarizer")
-    openai.api_key = os.environ.get("OPENAI_API_KEYS")
+    openai.api_key = os.environ.get("OPENAI_API_KEY")
     if openai.api_key is None:
         openai.api_key = st.text_input("OPENAI_API_KEY")
 
