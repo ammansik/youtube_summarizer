@@ -19,10 +19,10 @@ CHAPTER_TITLE = "Give a title to this video chapter based on the transcript: "
 title_template = "Give a title to this text summary: {text}"
 TITLE_PROMPT = PromptTemplate(template=title_template, input_variables=["text"])
 
-openai.api_key = os.environ.get("CHATGPT_API_KEY")
+openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 if openai.api_key is None:
-    raise ValueError("CHATGPT_API_KEY environment variable not set")
+    raise ValueError("OPENAI_API_KEY environment variable not set")
 
 
 @retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(6))
@@ -162,7 +162,7 @@ def get_chunk_text(chunk):
 
 
 def summarize_chapters(chapters):
-    llm = OpenAI(temperature=0.9, openai_api_key=os.environ.get("CHATGPT_API_KEY"))
+    llm = OpenAI(temperature=0.9, openai_api_key=os.environ.get("OPENAI_API_KEY"))
     chapter_docs = [Document(page_content=chapter["text"]) for chapter in chapters]
 
     summary_chain = load_summarize_chain(
