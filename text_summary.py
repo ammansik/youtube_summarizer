@@ -19,13 +19,8 @@ CHAPTER_TITLE = "Give a title to this video chapter based on the transcript: "
 title_template = "Give a title to this text summary: {text}"
 TITLE_PROMPT = PromptTemplate(template=title_template, input_variables=["text"])
 
-# @retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(6))
+@retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(6))
 def get_embeddings(text_chunks, openai_api_key, model="text-embedding-ada-002"):
-    # openai.api_key = openai_api_key
-    print("get_embedding")
-    # print("openai.api_key")
-    print(openai_api_key)
-    print(text_chunks)
     data = openai.Embedding.create(
         input=text_chunks, model=model, openai_api_key=openai_api_key
     )["data"]
