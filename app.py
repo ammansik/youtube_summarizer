@@ -5,6 +5,7 @@ import time
 from functools import wraps
 from shutil import rmtree
 
+import openai
 import streamlit as st
 
 from audio_to_text import transcribe_audio
@@ -45,19 +46,19 @@ def audio_to_text(audio_fpath):
 
 
 @timing_decorator("Retrieving chapters")
-def retrieve_chapters(timestamped_text, yt_chapters):
+def retrieve_chapters(timestamped_text, yt_chapters, openai_api_key):
     # Get chapters
     if len(yt_chapters) == 0:
-        chapters = get_automatic_chapters(timestamped_text)
+        chapters = get_automatic_chapters(timestamped_text, openai_api_key)
     else:
         chapters = align_chapters(timestamped_text, yt_chapters)
     return chapters
 
 
 @timing_decorator("Summarizing video")
-def summarize_youtube_chapters(chapters):
+def summarize_youtube_chapters(chapters, openai_api_key):
     # Summarize chapters
-    summarized_chapters = summarize_chapters(chapters)
+    summarized_chapters = summarize_chapters(chapters, openai_api_key)
     return summarized_chapters
 
 
@@ -84,8 +85,10 @@ def summarize_video(youtube_url):
     audio_fpath, yt_chapters = download_youtube(youtube_url, work_dir)
     timestamped_text = audio_to_text(audio_fpath)
 
-    chapters = retrieve_chapters(timestamped_text, yt_chapters)
-    summarized_chapters, overall_summary = summarize_youtube_chapters(chapters)
+    chapters = retrieve_chapters(timestamped_text, yt_chapters, openai.api_key)
+    summarized_chapters, overall_summary = summarize_youtube_chapters(
+        chapters, openai.api_key
+    )
 
     st.write(f"**TLDR:** {overall_summary}")
 
@@ -109,6 +112,10 @@ def summarize_video(youtube_url):
 
 def app():
     st.title("Video Summarizer")
+    openai.api_key = os.environ.get("OPENAI_API_KEYS")
+    if openai.api_key is None:
+        openai.api_key = st.text_input("OPENAI_API_KEY")
+
     youtube_url = st.text_input("Enter a YouTube URL")
 
     # Add summarize button

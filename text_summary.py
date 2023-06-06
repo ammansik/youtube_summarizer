@@ -19,15 +19,16 @@ CHAPTER_TITLE = "Give a title to this video chapter based on the transcript: "
 title_template = "Give a title to this text summary: {text}"
 TITLE_PROMPT = PromptTemplate(template=title_template, input_variables=["text"])
 
-openai.api_key = os.environ.get("OPENAI_API_KEY")
-
-if openai.api_key is None:
-    raise ValueError("OPENAI_API_KEY environment variable not set")
-
-
-@retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(6))
-def get_embeddings(text_chunks, model="text-embedding-ada-002"):
-    data = openai.Embedding.create(input=text_chunks, model=model)["data"]
+# @retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(6))
+def get_embeddings(text_chunks, openai_api_key, model="text-embedding-ada-002"):
+    # openai.api_key = openai_api_key
+    print("get_embedding")
+    # print("openai.api_key")
+    print(openai_api_key)
+    print(text_chunks)
+    data = openai.Embedding.create(
+        input=text_chunks, model=model, openai_api_key=openai_api_key
+    )["data"]
     embeddings = [item["embedding"] for item in data]
     return np.array(embeddings)
 
@@ -98,12 +99,18 @@ def align_chapters(timestamped_transcript, yt_chapters):
     return chapters
 
 
-def get_automatic_chapters(timestamped_transcript, chunk_lines=5, num_clusters=3):
-    timestamped_transcripts = timestamped_transcript.split("\n")
+def get_automatic_chapters(
+    timestamped_transcript, openai_api_key, chunk_lines=5, num_clusters=3
+):
+    timestamped_transcripts = [
+        timestamped_line
+        for timestamped_line in timestamped_transcript.split("\n")
+        if len(timestamped_line.strip()) > 0
+    ]
 
     # Split into chunks
     text_chunks = get_chunks(timestamped_transcripts, chunk_lines)
-    embeddings = get_embeddings(text_chunks)
+    embeddings = get_embeddings(text_chunks, openai_api_key)
 
     # Creating and fitting the K-means model
     kmeans = KMeans(n_clusters=num_clusters)
@@ -161,8 +168,8 @@ def get_chunk_text(chunk):
     return chunk_text
 
 
-def summarize_chapters(chapters):
-    llm = OpenAI(temperature=0.9, openai_api_key=os.environ.get("OPENAI_API_KEY"))
+def summarize_chapters(chapters, openai_api_key):
+    llm = OpenAI(temperature=0.9, openai_api_key=openai_api_key)
     chapter_docs = [Document(page_content=chapter["text"]) for chapter in chapters]
 
     summary_chain = load_summarize_chain(
