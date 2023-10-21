@@ -196,6 +196,7 @@ def summarize_chapters(chapters, openai_api_key):
             {
                 "start": chapter["start_time"],
                 "end": chapter["end_time"],
+                "text": chapter["text"],
                 "title": chapter_title.strip(),
                 "summary": chapter_summary.strip(),
             }

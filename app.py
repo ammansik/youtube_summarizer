@@ -58,8 +58,8 @@ def retrieve_chapters(timestamped_text, yt_chapters, openai_api_key):
 @timing_decorator("Summarizing video")
 def summarize_youtube_chapters(chapters, openai_api_key):
     # Summarize chapters
-    summarized_chapters = summarize_chapters(chapters, openai_api_key)
-    return summarized_chapters
+    summarized_chapters, overall_summary = summarize_chapters(chapters, openai_api_key)
+    return summarized_chapters, overall_summary
 
 
 def get_work_dir():
@@ -96,9 +96,11 @@ def summarize_video(youtube_url):
         start_time = convert_seconds(summarized_chapter["start"])
         end_time = convert_seconds(summarized_chapter["end"])
 
+
         timestamp = f"{start_time} - {end_time}"
         title = summarized_chapter["title"]
         summary = summarized_chapter["summary"]
+        transcript = summarized_chapter["text"]
 
         # Display the hyperlink with timestamp and title
         hyperlink = (
@@ -106,7 +108,10 @@ def summarize_video(youtube_url):
         )
         st.markdown(hyperlink, unsafe_allow_html=True)
 
-        st.write(summary)
+        st.write(f'Summary: {summary}')
+        # Use an expander for the transcript
+        with st.expander("Show Transcript"):
+            st.write(transcript)
     rmtree(work_dir)
 
 
